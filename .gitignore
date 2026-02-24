@@ -1,0 +1,28 @@
+# .gitignore for Blog Break
+
+# .NET
+bin/
+obj/
+[Ee]xternals/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Database
+BlogApi/blog.db
+BlogApi/blog.db-shm
+BlogApi/blog.db-wal
+
+# VS Code
+.vscode/
+
+# User-specific
+.gemini/
+.idea/
+.vs/
+
+# Artifacts
+brain/
+logs/
+uploads/*
+!uploads/.gitkeep

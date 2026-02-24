@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiritual Insights | Newbreak Church Blog</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="nav-content">
+                <a href="index.html" class="logo btn-back" id="mainLogo">
+                    <span class="logo-blog">Blog</span><span class="logo-sep">/</span><span
+                        class="logo-break">Break</span>
+                </a>
+                <a href="admin.html" id="adminHeaderLink"
+                    style="display: none; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1.5px solid var(--primary); border-radius: 20px; transition: all 0.3s ease;"
+                    onmouseover="this.style.background='var(--primary)'; this.style.color='#fff';"
+                    onmouseout="this.style.background='transparent'; this.style.color='var(--primary)';">Admin Panel</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Insight into our message.</h1>
+                <p>Developing next right steps so you can hear a message and do a message in practical ways.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="search-container" style="margin-bottom: 2rem; text-align: center;">
+                <input type="text" id="searchInput" placeholder="Search insights..."
+                    style="padding: 0.8rem 1.5rem; width: 100%; max-width: 500px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.1); font-size: 1rem; outline: none; transition: border-color 0.2s;"
+                    oninput="handleSearch(this.value)">
+            </div>
+            <div id="featuredPost" class="featured-post-container">
+                <!-- Featured post will be rendered here -->
+            </div>
+
+            <div class="category-nav">
+                <button class="category-btn active" onclick="filterByCategory('All')">All Insights</button>
+                <button class="category-btn" onclick="filterByCategory('Faith')">Faith</button>
+                <button class="category-btn" onclick="filterByCategory('Growth')">Growth</button>
+                <button class="category-btn" onclick="filterByCategory('Community')">Community</button>
+            </div>
+            <div id="postsGrid" class="posts-grid">
+                <!-- Posts will be loaded here via JS -->
+                <div class="loading">Loading insights...</div>
+            </div>
+        </section>
+
+        <section class="container" style="padding: 6rem 0; border-top: 1px solid #eee;">
+            <div
+                style="background: var(--primary); color: #fff; padding: 4rem; border-radius: var(--border-radius); display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h2 style="color: #fff; margin-bottom: 1rem;">Stay updated with our weekly insights.</h2>
+                    <p style="opacity: 0.8;">Get the latest messages and practical steps delivered directly to your
+                        inbox.</p>
+                </div>
+                <form style="flex: 1; min-width: 300px; display: flex; gap: 1rem;">
+                    <input type="email" placeholder="Your email address"
+                        style="flex: 1; padding: 1rem 1.5rem; border-radius: 30px; border: none; outline: none; font-size: 1rem;">
+                    <button type="submit"
+                        style="padding: 1rem 2rem; background: var(--accent); color: #fff; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;"
+                        onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Subscribe</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="container"
+            style="background: #fff; padding: 4rem; border-radius: var(--border-radius); margin-bottom: 6rem; box-shadow: var(--shadow);">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <h2 style="margin-bottom: 1.5rem;">About Our Blog</h2>
+                <p style="color: var(--secondary); font-size: 1.1rem; line-height: 1.8;">
+                    The Newbreak Church blog takes the message from the weekend and lays out next right steps, so you
+                    can hear a message and do a message in practical ways. Our goal is to provide weekly insights that
+                    help you grow in your faith and live out God's promises in San Diego and beyond.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="padding: 4rem 0; text-align: center; background: #fff; border-top: 1px solid #eee;">
+        <div class="container">
+            <p>&copy; 2026 Newbreak Church. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <button id="backToTop" class="back-to-top" title="Back to Top">
+        <svg viewBox="0 0 384 512" class="svg-icon">
+            <path
+                d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z">
+            </path>
+        </svg>
+    </button>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
