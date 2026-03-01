@@ -25,10 +25,10 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// 1. Move Exception Handler to the very top
-app.UseDeveloperExceptionPage();
+// 1. CORS MUST BE FIRST (so errors still have CORS headers)
+app.UseCors("AllowAll");
 
-// 2. Global Exception Handler for JSON responses
+// 2. Exception Handler with CORS headers
 app.Use(async (context, next) =>
 {
     try
@@ -37,20 +37,25 @@ app.Use(async (context, next) =>
     }
     catch (Exception ex)
     {
+        // Add CORS headers manually to error responses if needed
+        context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+        
         context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsJsonAsync(new { 
             error = ex.Message, 
+            type = ex.GetType().Name,
             stackTrace = ex.StackTrace,
             innerException = ex.InnerException?.Message 
         });
     }
 });
 
+app.UseDeveloperExceptionPage();
+
 // 3. Simple Health Checks
-app.MapGet("/", () => "API is running! 🚀");
+app.MapGet("/", () => "API is running! 🚀 (v2)");
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", time = DateTime.UtcNow }));
-app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy (API Prefix)", time = DateTime.UtcNow }));
 
 // 4. DB Migration and Startup Logic
 var startupLogs = new List<string>();
@@ -67,23 +72,13 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<BlogDbContext>();
         Log("🔍 DATABASE INIT START");
         
-        try {
-            Log("🚀 Attempting Migrate()...");
-            context.Database.Migrate();
-            Log("✅ Migrate() complete.");
-        } catch (Exception ex) {
-            Log($"⚠️ Migrate() failed: {ex.Message}. Trying EnsureCreated()...");
-            context.Database.EnsureCreated();
-            Log("✅ EnsureCreated() complete.");
-        }
+        Log("🚀 Running Database Migrations (Migrate)...");
+        context.Database.Migrate();
+        Log("✅ Migrate() complete.");
 
-        // Verify Table Existence
-        try {
-            var count = context.Posts.Count();
-            Log($"✅ Verification: 'Posts' table exists (count={count}).");
-        } catch (Exception ex) {
-            Log($"❌ Verification FAILED: {ex.Message}. Table still missing!");
-        }
+        // Verification
+        var count = context.Posts.Count();
+        Log($"✅ Verification: 'Posts' table exists (count={count}).");
 
         var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
         if (!Directory.Exists(uploadsPath)) {
@@ -92,13 +87,13 @@ using (var scope = app.Services.CreateScope())
         }
     }
     catch (Exception ex) {
-        Log($"🔥 FATAL STARTUP ERROR: {ex.Message}");
+        Log($"🔥 STARTUP ERROR: {ex.Message}");
+        Log($"🔥 STACK: {ex.StackTrace}");
     }
 }
 
 app.MapGet("/api/debug", () => startupLogs);
 
-app.UseCors("AllowAll");
 app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
@@ -106,10 +101,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
