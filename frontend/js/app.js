@@ -1,7 +1,9 @@
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5041/api'
-    : 'https://blog-break-api.onrender.com/api'; // Replace with your live Render URL later
-const BASE_URL = 'http://localhost:5005';
+    : 'https://blog-break-api.onrender.com/api';
+const BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5041'
+    : 'https://blog-break-api.onrender.com';
 let allPosts = [];
 
 function resolveImageUrl(url) {
