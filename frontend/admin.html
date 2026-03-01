@@ -516,10 +516,13 @@
                     document.getElementById('postForm').reset();
                     fetchMgmtPosts();
                 } else {
-                    alert('Publishing failed.');
+                    const errorText = await response.text();
+                    console.error('Server error:', errorText);
+                    alert(`Publishing failed: ${errorText || response.statusText}`);
                 }
             } catch (err) {
-                alert('Connection error.');
+                console.error('Fetch error:', err);
+                alert(`Connection error: ${err.message}. Make sure your API is awake and CORS is allowed.`);
             } finally {
                 btn.querySelector('.btn-txt').innerText = 'Publish Now';
                 btn.disabled = false;

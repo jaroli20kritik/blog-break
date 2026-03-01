@@ -40,32 +40,47 @@ namespace BlogApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Post>> PostPost([FromForm] string title, [FromForm] string category, [FromForm] string summary, [FromForm] string content, IFormFile? imageFile)
         {
-            var post = new Post
+            try
             {
-                Title = title,
-                Category = category,
-                Summary = summary,
-                Content = content,
-                PublishedDate = DateTime.Now
-            };
-
-            if (imageFile != null && imageFile.Length > 0)
-            {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var post = new Post
                 {
-                    await imageFile.CopyToAsync(stream);
+                    Title = title,
+                    Category = category,
+                    Summary = summary,
+                    Content = content,
+                    PublishedDate = DateTime.Now
+                };
+
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    post.ImageUrl = $"/uploads/{fileName}";
                 }
 
-                post.ImageUrl = $"/uploads/{fileName}";
+                _context.Posts.Add(post);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetPost", new { id = post.Id }, post);
             }
-
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPost", new { id = post.Id }, post);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating post: {ex.Message}");
+                return StatusCode(500, "Internal server error while creating post.");
+            }
         }
         // DELETE: api/Posts/5
         [HttpDelete("{id}")]
