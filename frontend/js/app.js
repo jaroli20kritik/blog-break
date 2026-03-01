@@ -44,32 +44,47 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if Admin Mode is active in this session
     if (sessionStorage.getItem('adminMode') === 'active') {
         if (adminLink) adminLink.style.display = 'inline-block';
+    } else {
+        if (adminLink) adminLink.style.display = 'none';
     }
 
     if (mainLogo) {
+        let navTimer;
+
         mainLogo.addEventListener('click', (e) => {
-            // If already active, just let it be a normal link
-            if (sessionStorage.getItem('adminMode') === 'active') return;
+            // Check if we are currently on the index.html page
+            const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
 
-            e.preventDefault(); // Prevent navigation during secret sequence
-            logoClicks++;
+            if (isIndexPage) {
+                // On index page, NEVER redirect anywhere. 
+                // Just use the logo as a pure 5-click button.
+                e.preventDefault();
 
-            if (logoClicks === 5) {
-                sessionStorage.setItem('adminMode', 'active');
-                if (adminLink) {
-                    adminLink.style.display = 'inline-block';
-                    adminLink.style.opacity = '0';
-                    setTimeout(() => adminLink.style.opacity = '1', 10);
+                // If already active, nothing more to do
+                if (sessionStorage.getItem('adminMode') === 'active') return;
+
+                logoClicks++;
+                clearTimeout(navTimer);
+
+                if (logoClicks >= 5) {
+                    sessionStorage.setItem('adminMode', 'active');
+                    if (adminLink) {
+                        adminLink.style.display = 'flex';
+                        adminLink.style.opacity = '0';
+                        setTimeout(() => adminLink.style.opacity = '1', 10);
+                    }
+                    showToast('Admin Mode Activated 🛠️');
+                    logoClicks = 0;
+                } else {
+                    navTimer = setTimeout(() => {
+                        logoClicks = 0;
+                    }, 400);
                 }
-                showToast('Admin Mode Activated 🛠️');
-                logoClicks = 0;
+            } else {
+                // If we are ON ANOTHER PAGE (like admin.html or post.html), 
+                // clicking the logo should still let you go back to index.html
+                // We don't prevent default here.
             }
-
-            // Reset clicks after 3 seconds of inactivity
-            clearTimeout(window.logoTimer);
-            window.logoTimer = setTimeout(() => {
-                logoClicks = 0;
-            }, 3000);
         });
     }
 
@@ -132,20 +147,24 @@ function showToast(message) {
     toast.innerText = message;
     document.body.appendChild(toast);
 
-    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => toast.classList.add('show'), 50);
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
 }
 
 function showSkeletons() {
     const grid = document.getElementById('postsGrid');
+    const featured = document.getElementById('featuredPost');
     if (!grid) return;
-    grid.innerHTML = Array(3).fill(0).map(() => `
-        <div class="post-card">
-            <div class="skeleton" style="height: 100%; border-radius: 12px;"></div>
-        </div>
+
+    if (featured) {
+        featured.innerHTML = `<div class="featured-card skeleton" style="min-height: 500px;"></div>`;
+    }
+
+    grid.innerHTML = Array(6).fill(0).map(() => `
+        <div class="post-card skeleton" style="height: 420px; border-radius: var(--border-radius);"></div>
     `).join('');
 }
 
@@ -213,7 +232,7 @@ function renderPosts(posts) {
         const rest = posts.slice(1);
 
         featuredContainer.innerHTML = `
-            <div class="featured-card" onclick="location.href='post.html?id=${featured.id}'">
+            <div class="featured-card reveal" onclick="location.href='post.html?id=${featured.id}'">
                 <div class="featured-image-wrapper">
                     <img src="${resolveImageUrl(featured.imageUrl)}" alt="${featured.title}">
                 </div>
@@ -221,9 +240,9 @@ function renderPosts(posts) {
                     <span class="post-category">${featured.category}</span>
                     <h2>${featured.title}</h2>
                     <p>${featured.summary}</p>
-                    <div class="post-footer">
-                        <span>${new Date(featured.publishedDate).toLocaleDateString()}</span>
-                        <span>Read Featured Post →</span>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: auto;">
+                        <span style="font-weight: 600; color: var(--text-muted); font-size: 0.9rem;">${new Date(featured.publishedDate).toLocaleDateString()}</span>
+                        <span style="font-weight: 800; color: var(--accent); letter-spacing: 1px; font-size: 0.8rem; text-transform: uppercase;">Discover Story →</span>
                     </div>
                 </div>
             </div>
@@ -245,19 +264,19 @@ function renderGrid(posts) {
                 <div class="post-card-front">
                     <img src="${resolveImageUrl(post.imageUrl)}" alt="${post.title}">
                     <div class="post-card-front-overlay">
-                        <span class="post-category" style="color: #fff; background: var(--accent); padding: 2px 10px; border-radius: 10px; font-size: 0.7rem; margin-bottom: 0.5rem; display: inline-block;">${post.category}</span>
-                        <h2>${post.title}</h2>
+                        <span class="post-category" style="background: var(--accent); color: #fff; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; margin-bottom: 0.8rem; display: inline-block;">${post.category}</span>
+                        <h2 style="font-size: 1.4rem; font-weight: 700;">${post.title}</h2>
                     </div>
                 </div>
                 <div class="post-card-back">
                     <span class="post-category">${post.category}</span>
-                    <div class="description" onclick="event.stopPropagation()">
-                        <h2>${post.title}</h2>
+                    <div>
+                        <h3>${post.title}</h3>
                         <p>${post.summary}</p>
                     </div>
-                    <div class="post-footer">
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 600; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                         <span>${new Date(post.publishedDate).toLocaleDateString()}</span>
-                        <span style="font-weight: 600;">Read More →</span>
+                        <span>Read More →</span>
                     </div>
                 </div>
             </div>

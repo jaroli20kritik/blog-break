@@ -333,12 +333,16 @@
 </head>
 
 <body>
-    <header>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <header id="mainHeader">
         <div class="container nav-content">
-            <a href="index.html" class="logo btn-back">
+            <a href="index.html" class="logo">
                 <span class="logo-blog">Blog</span><span class="logo-sep">/</span><span class="logo-break">Break</span>
             </a>
-            <button class="button type1 btn-back" onclick="location.href='index.html'">
+            <button class="button type1 btn-back"
+                onclick="sessionStorage.removeItem('adminMode'); location.href='index.html'">
                 <span class="btn-txt">Go Back</span>
             </button>
         </div>
@@ -347,14 +351,16 @@
     <main class="container">
         <div class="admin-page-header reveal">
             <div>
-                <h1>Management</h1>
-                <p>Welcome to your storytelling control center.</p>
+                <h1 style="margin-bottom: 0.5rem;">Management</h1>
+                <p style="color: var(--text-muted); font-weight: 500;">Welcome to your storytelling control center.</p>
             </div>
-            <button class="btn-create" id="openModalBtn">
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button class="btn-create" id="openModalBtn"
+                style="border-radius: 30px; padding: 1rem 2rem; box-shadow: var(--shadow);">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    style="margin-right: 8px;">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
-                Create New Post
+                Post Story
             </button>
         </div>
 
@@ -365,13 +371,15 @@
 
     <!-- Modal Popup for Create Post -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content">
-            <button class="close-modal" id="closeModalBtn" title="Close">&times;</button>
+        <div class="modal-content"
+            style="background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border);">
+            <button class="close-modal" id="closeModalBtn" title="Close"
+                style="background: rgba(0,0,0,0.05);">&times;</button>
             <div class="modal-scrollable">
-                <h2 style="margin-bottom: 2rem; font-family: 'Playfair Display', serif;">New Insight</h2>
+                <h2 style="margin-bottom: 2.5rem; font-family: 'Outfit', sans-serif; font-size: 2rem;">New Story</h2>
                 <form id="postForm">
                     <div class="form-group">
-                        <label for="title">Post Title</label>
+                        <label for="title">Title</label>
                         <input type="text" id="title" name="title" placeholder="Give it a powerful title..." required>
                     </div>
 
@@ -387,7 +395,8 @@
                         </div>
                         <div class="form-group">
                             <label for="imageFile">Cover Image</label>
-                            <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
+                            <input type="file" id="imageFile" name="imageFile" accept="image/*" required
+                                style="padding: 0.6rem; background: #fff;">
                         </div>
                     </div>
 
@@ -398,12 +407,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="content">Story Content</label>
+                        <label for="content">The Story</label>
                         <textarea id="content" name="content" placeholder="Share your message..." required></textarea>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="button type1" style="width: 100%; height: 50px;">
-                        <span class="btn-txt">Publish Now</span>
+                    <button type="submit" id="submitBtn" class="button type1"
+                        style="width: 100%; height: 56px; background: var(--primary); color: #fff; margin-top: 1rem;">
+                        <span class="btn-txt">Publish Story</span>
                     </button>
                 </form>
             </div>
@@ -474,13 +484,13 @@
             grid.innerHTML = posts.map(post => `
                 <div class="mgmt-card reveal">
                     <img class="mgmt-img" src="${resolveImageUrl(post.imageUrl)}" alt="">
-                    <div class="mgmt-content">
-                        <span class="post-category" style="font-size: 0.7rem; margin-bottom: 0.5rem; display: inline-block;">${post.category}</span>
-                        <h3>${post.title}</h3>
-                        <p class="mgmt-meta">Published: ${new Date(post.publishedDate).toLocaleDateString()}</p>
+                    <div class="mgmt-content" style="background: var(--glass); border-top: 1px solid var(--glass-border);">
+                        <span class="post-category" style="background: rgba(251, 113, 133, 0.1); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; width: fit-content; margin-bottom: 1rem;">${post.category}</span>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">${post.title}</h3>
+                        <p class="mgmt-meta" style="font-weight: 500; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">${new Date(post.publishedDate).toLocaleDateString()}</p>
                         <div class="mgmt-actions">
-                            <a href="post.html?id=${post.id}" class="btn-view-card">View</a>
-                            <button class="btn-delete-card" onclick="deletePost(${post.id})">Delete</button>
+                            <a href="post.html?id=${post.id}" class="btn-view-card" style="border-radius: 8px; font-weight: 700;">View</a>
+                            <button class="btn-delete-card" onclick="deletePost(${post.id})" style="border-radius: 8px; font-weight: 700;">Delete</button>
                         </div>
                     </div>
                 </div>
