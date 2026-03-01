@@ -25,7 +25,34 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Automatically apply migrations and check for uploads folder on startup
+// 1. Move Exception Handler to the very top
+app.UseDeveloperExceptionPage();
+
+// 2. Global Exception Handler for JSON responses
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new { 
+            error = ex.Message, 
+            stackTrace = ex.StackTrace,
+            innerException = ex.InnerException?.Message 
+        });
+    }
+});
+
+// 3. Simple Health Checks
+app.MapGet("/", () => "API is running! 🚀");
+app.MapGet("/health", () => Results.Ok(new { status = "Healthy", time = DateTime.UtcNow }));
+app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy (API Prefix)", time = DateTime.UtcNow }));
+
+// 4. DB Migration and Startup Logic
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -35,35 +62,25 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
         Console.WriteLine("Database migrated successfully.");
 
-        // Ensure uploads folder exists
         var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
         if (!Directory.Exists(uploadsPath))
         {
             Directory.CreateDirectory(uploadsPath);
-            Console.WriteLine("Uploads directory created.");
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"An error occurred during startup: {ex.Message}");
+        Console.WriteLine($"Startup Error: {ex.Message}");
     }
 }
 
 app.UseCors("AllowAll");
-
 app.UseStaticFiles();
-
-// Configure the HTTP request pipeline.
-// Temporarily enable developer exception page in production to debug 500 errors
-app.UseDeveloperExceptionPage();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-// Health check endpoint
-app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy", time = DateTime.UtcNow }));
 
 // app.UseHttpsRedirection();
 
