@@ -53,60 +53,50 @@ app.MapGet("/health", () => Results.Ok(new { status = "Healthy", time = DateTime
 app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy (API Prefix)", time = DateTime.UtcNow }));
 
 // 4. DB Migration and Startup Logic
+var startupLogs = new List<string>();
+void Log(string msg) { 
+    Console.WriteLine(msg); 
+    startupLogs.Add($"{DateTime.UtcNow:HH:mm:ss} - {msg}"); 
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<BlogDbContext>();
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine($"🔍 DATABASE INIT: {connectionString}");
-
-        // Log migrations status
-        var pendingMigrations = context.Database.GetPendingMigrations().ToList();
-        var appliedMigrations = context.Database.GetAppliedMigrations().ToList();
-        Console.WriteLine($"🔍 Migrations: Applied={appliedMigrations.Count}, Pending={pendingMigrations.Count}");
+        Log("🔍 DATABASE INIT START");
         
-        if (pendingMigrations.Any())
-        {
-            Console.WriteLine("🚀 Applying Pending Migrations...");
+        try {
+            Log("🚀 Attempting Migrate()...");
             context.Database.Migrate();
-            Console.WriteLine("✅ Migration complete.");
-        }
-        else
-        {
-            Console.WriteLine("ℹ️ No pending migrations.");
-            // Force create if applied count is high but tables missing (corrupted state)
-            if (!appliedMigrations.Any()) 
-            {
-                Console.WriteLine("⚠️ No migrations found at all. Creating database from scratch...");
-                context.Database.EnsureCreated();
-                Console.WriteLine("✅ EnsureCreated complete.");
-            }
+            Log("✅ Migrate() complete.");
+        } catch (Exception ex) {
+            Log($"⚠️ Migrate() failed: {ex.Message}. Trying EnsureCreated()...");
+            context.Database.EnsureCreated();
+            Log("✅ EnsureCreated() complete.");
         }
 
-        // Final verification check for the 'Posts' table
+        // Verify Table Existence
         try {
             var count = context.Posts.Count();
-            Console.WriteLine($"✅ Table 'Posts' exists (Row count: {count})");
-        } catch {
-            Console.WriteLine("❌ Table 'Posts' STILL DOES NOT EXIST. Forcing EnsureCreated fallback...");
-            context.Database.EnsureCreated();
+            Log($"✅ Verification: 'Posts' table exists (count={count}).");
+        } catch (Exception ex) {
+            Log($"❌ Verification FAILED: {ex.Message}. Table still missing!");
         }
 
         var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-        if (!Directory.Exists(uploadsPath))
-        {
-             Directory.CreateDirectory(uploadsPath);
-             Console.WriteLine("📁 Created uploads folder.");
+        if (!Directory.Exists(uploadsPath)) {
+            Directory.CreateDirectory(uploadsPath);
+            Log("📁 Created uploads folder.");
         }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"🔥 STARTUP ERROR: {ex.Message}");
-        Console.WriteLine($"🔥 STACK TRACE: {ex.StackTrace}");
+    catch (Exception ex) {
+        Log($"🔥 FATAL STARTUP ERROR: {ex.Message}");
     }
 }
+
+app.MapGet("/api/debug", () => startupLogs);
 
 app.UseCors("AllowAll");
 app.UseStaticFiles();
