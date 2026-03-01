@@ -25,6 +25,30 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Automatically apply migrations and check for uploads folder on startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<BlogDbContext>();
+        context.Database.Migrate();
+        Console.WriteLine("Database migrated successfully.");
+
+        // Ensure uploads folder exists
+        var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        if (!Directory.Exists(uploadsPath))
+        {
+            Directory.CreateDirectory(uploadsPath);
+            Console.WriteLine("Uploads directory created.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred during startup: {ex.Message}");
+    }
+}
+
 app.UseCors("AllowAll");
 
 app.UseStaticFiles();
