@@ -59,18 +59,42 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<BlogDbContext>();
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        Console.WriteLine($"🔍 Initializing Database with Connection: {connectionString}");
+
+        // Ensure the directory for the DB exists
+        var dbPath = connectionString.Split('=')[1];
+        if (!Path.IsPathRooted(dbPath))
+        {
+            dbPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+        }
+        var dbFolder = Path.GetDirectoryName(dbPath);
+        if (!string.IsNullOrEmpty(dbFolder) && !Directory.Exists(dbFolder))
+        {
+            Directory.CreateDirectory(dbFolder);
+        }
+
+        Console.WriteLine("🚀 Running Database Migrations...");
         context.Database.Migrate();
-        Console.WriteLine("Database migrated successfully.");
+        Console.WriteLine("✅ Database migrated successfully.");
+
+        // Additional check: Ensure table exists (sometimes Migrate doesn't create it if no migrations are found)
+        if (!context.Database.CanConnect())
+        {
+             Console.WriteLine("❌ Cannot connect to database.");
+        }
 
         var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
         if (!Directory.Exists(uploadsPath))
         {
-            Directory.CreateDirectory(uploadsPath);
+             Directory.CreateDirectory(uploadsPath);
+             Console.WriteLine("📁 Created uploads folder.");
         }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Startup Error: {ex.Message}");
+        Console.WriteLine($"🔥 STARTUP ERROR: {ex.Message}");
+        Console.WriteLine($"🔥 STACK TRACE: {ex.StackTrace}");
     }
 }
 
