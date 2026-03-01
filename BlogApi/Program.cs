@@ -54,10 +54,16 @@ app.UseCors("AllowAll");
 app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
+// Temporarily enable developer exception page in production to debug 500 errors
+app.UseDeveloperExceptionPage();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Health check endpoint
+app.MapGet("/api/health", () => Results.Ok(new { status = "Healthy", time = DateTime.UtcNow }));
 
 // app.UseHttpsRedirection();
 
