@@ -60,28 +60,38 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<BlogDbContext>();
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        Console.WriteLine($"🔍 Initializing Database with Connection: {connectionString}");
+        Console.WriteLine($"🔍 DATABASE INIT: {connectionString}");
 
-        // Ensure the directory for the DB exists
-        var dbPath = connectionString.Split('=')[1];
-        if (!Path.IsPathRooted(dbPath))
+        // Log migrations status
+        var pendingMigrations = context.Database.GetPendingMigrations().ToList();
+        var appliedMigrations = context.Database.GetAppliedMigrations().ToList();
+        Console.WriteLine($"🔍 Migrations: Applied={appliedMigrations.Count}, Pending={pendingMigrations.Count}");
+        
+        if (pendingMigrations.Any())
         {
-            dbPath = Path.Combine(Directory.GetCurrentDirectory(), dbPath);
+            Console.WriteLine("🚀 Applying Pending Migrations...");
+            context.Database.Migrate();
+            Console.WriteLine("✅ Migration complete.");
         }
-        var dbFolder = Path.GetDirectoryName(dbPath);
-        if (!string.IsNullOrEmpty(dbFolder) && !Directory.Exists(dbFolder))
+        else
         {
-            Directory.CreateDirectory(dbFolder);
+            Console.WriteLine("ℹ️ No pending migrations.");
+            // Force create if applied count is high but tables missing (corrupted state)
+            if (!appliedMigrations.Any()) 
+            {
+                Console.WriteLine("⚠️ No migrations found at all. Creating database from scratch...");
+                context.Database.EnsureCreated();
+                Console.WriteLine("✅ EnsureCreated complete.");
+            }
         }
 
-        Console.WriteLine("🚀 Running Database Migrations...");
-        context.Database.Migrate();
-        Console.WriteLine("✅ Database migrated successfully.");
-
-        // Additional check: Ensure table exists (sometimes Migrate doesn't create it if no migrations are found)
-        if (!context.Database.CanConnect())
-        {
-             Console.WriteLine("❌ Cannot connect to database.");
+        // Final verification check for the 'Posts' table
+        try {
+            var count = context.Posts.Count();
+            Console.WriteLine($"✅ Table 'Posts' exists (Row count: {count})");
+        } catch {
+            Console.WriteLine("❌ Table 'Posts' STILL DOES NOT EXIST. Forcing EnsureCreated fallback...");
+            context.Database.EnsureCreated();
         }
 
         var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
