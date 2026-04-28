@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -16,7 +17,7 @@ const AdminLoginPage = () => {
         setLoading(true);
         setError('');
         try {
-            const res = await axios.post('http://localhost:5021/api/Auth/login', { username, password });
+            const res = await axios.post(`${API_BASE}/api/Auth/login`, { username, password });
             login(res.data.token, { username: res.data.username, role: res.data.role });
             navigate('/admin/dashboard');
         } catch (err) {

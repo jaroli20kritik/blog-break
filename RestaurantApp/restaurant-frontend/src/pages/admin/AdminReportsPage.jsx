@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -13,8 +14,8 @@ const AdminReportsPage = () => {
 
     const fetchData = async () => {
         const [revRes, payRes] = await Promise.all([
-            axios.get('http://localhost:5021/api/Reports/revenue', { headers }),
-            axios.get(`http://localhost:5021/api/Reports/payments?page=${page}&pageSize=15`, { headers })
+            axios.get(`${API_BASE}/api/Reports/revenue`, { headers }),
+            axios.get(`${API_BASE}/api/Reports/payments?page=${page}&pageSize=15`, { headers })
         ]);
         setStats(revRes.data);
         setPayments(payRes.data.payments);
@@ -28,7 +29,7 @@ const AdminReportsPage = () => {
         setPayments(prev => prev.map(p => p.id === paymentId ? { ...p, status: 'Completed' } : p));
         
         try {
-            await axios.post(`http://localhost:5021/api/Payment/confirm/${paymentId}`, {}, { headers });
+            await axios.post(`${API_BASE}/api/Payment/confirm/${paymentId}`, {}, { headers });
             fetchData(); // Reload stats and real data
         } catch (err) {
             console.error("Failed to verify payment", err);

@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -22,7 +23,7 @@ const CartPage = () => {
                 }))
             };
 
-            const response = await axios.post('http://localhost:5021/api/Order/create', orderPayload);
+            const response = await axios.post(`${API_BASE}/api/Order/create`, orderPayload);
             clearCart();
             // Pass order data to payment page
             navigate('/payment', { state: { order: response.data } });

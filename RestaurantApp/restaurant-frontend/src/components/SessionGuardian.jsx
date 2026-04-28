@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HubConnectionBuilder } from '@microsoft/signalr';
@@ -13,7 +14,7 @@ const SessionGuardian = ({ children }) => {
         if (!tableSession?.tableId) return;
 
         const connection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5021/orderhub')
+            .withUrl(`${API_BASE}/orderhub`)
             .withAutomaticReconnect()
             .build();
 

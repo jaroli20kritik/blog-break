@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { HubConnectionBuilder } from '@microsoft/signalr';
@@ -13,7 +14,7 @@ const KitchenPage = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get('http://localhost:5021/api/Order/kitchen', { headers });
+            const res = await axios.get(`${API_BASE}/api/Order/kitchen`, { headers });
             setOrders(res.data);
         } catch (err) {
             console.error(err);
@@ -24,7 +25,7 @@ const KitchenPage = () => {
         fetchOrders();
 
         const connection = new HubConnectionBuilder()
-            .withUrl("http://localhost:5021/orderhub")
+            .withUrl("${API_BASE}/orderhub")
             .withAutomaticReconnect()
             .build();
 
@@ -42,7 +43,7 @@ const KitchenPage = () => {
 
     const updateStatus = async (orderId, status) => {
         try {
-            await axios.post(`http://localhost:5021/api/Order/${orderId}/status`, `"${status}"`, {
+            await axios.post(`${API_BASE}/api/Order/${orderId}/status`, `"${status}"`, {
                 headers: { 
                     'Content-Type': 'application/json',
                     ...headers 

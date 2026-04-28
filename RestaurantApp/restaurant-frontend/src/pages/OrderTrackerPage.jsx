@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -22,7 +23,7 @@ const OrderTrackerPage = ({ orderId: propOrderId }) => {
     const fetchOrders = async () => {
         if (!tableSession?.tableId) return;
         try {
-            const res = await axios.get(`http://localhost:5021/api/Order/table/${tableSession.tableId}`);
+            const res = await axios.get(`${API_BASE}/api/Order/table/${tableSession.tableId}`);
             setOrders(res.data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
@@ -33,7 +34,7 @@ const OrderTrackerPage = ({ orderId: propOrderId }) => {
         fetchOrders();
 
         const connection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5021/orderhub')
+            .withUrl(`${API_BASE}/orderhub`)
             .withAutomaticReconnect()
             .build();
 

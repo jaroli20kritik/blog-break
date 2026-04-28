@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -15,8 +16,8 @@ const AdminDashboard = () => {
     const fetchData = async () => {
         try {
             const [revenueRes, ordersRes] = await Promise.all([
-                axios.get('http://localhost:5021/api/Reports/revenue', { headers }),
-                axios.get('http://localhost:5021/api/Order/kitchen', { headers })
+                axios.get(`${API_BASE}/api/Reports/revenue`, { headers }),
+                axios.get(`${API_BASE}/api/Order/kitchen`, { headers })
             ]);
             setStats(revenueRes.data);
             setLiveOrders(ordersRes.data);
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
         fetchData();
 
         const connection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5021/orderhub')
+            .withUrl(`${API_BASE}/orderhub`)
             .withAutomaticReconnect()
             .build();
 

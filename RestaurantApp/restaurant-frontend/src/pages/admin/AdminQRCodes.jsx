@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { QRCodeSVG } from 'qrcode.react';
@@ -13,7 +14,7 @@ const AdminQRCodes = () => {
     useEffect(() => {
         const fetchTables = async () => {
             try {
-                const res = await axios.get('http://localhost:5021/api/Table/all');
+                const res = await axios.get(`${API_BASE}/api/Table/all`);
                 setTables(res.data);
             } catch (err) {
                 console.error("Failed to fetch tables", err);

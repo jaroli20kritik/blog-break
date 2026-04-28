@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -13,7 +14,7 @@ const AdminMenuPage = () => {
     const headers = { Authorization: `Bearer ${token}` };
 
     const fetchMenu = async () => {
-        const res = await axios.get('http://localhost:5021/api/Menu/admin', { headers });
+        const res = await axios.get(`${API_BASE}/api/Menu/admin`, { headers });
         setCategories(res.data);
     };
 
@@ -22,7 +23,7 @@ const AdminMenuPage = () => {
     const addCategory = async (e) => {
         e.preventDefault();
         if (!newCatName.trim()) return;
-        await axios.post('http://localhost:5021/api/Menu/category', { name: newCatName }, { headers });
+        await axios.post(`${API_BASE}/api/Menu/category`, { name: newCatName }, { headers });
         setNewCatName('');
         fetchMenu();
     };
@@ -31,7 +32,7 @@ const AdminMenuPage = () => {
         // Optimistically remove from UI
         setCategories(prev => prev.filter(c => c.id !== id));
         try {
-            await axios.delete(`http://localhost:5021/api/Menu/category/${id}`, { headers });
+            await axios.delete(`${API_BASE}/api/Menu/category/${id}`, { headers });
         } catch (err) {
             console.error(err);
             alert('Failed to delete category.');
@@ -41,7 +42,7 @@ const AdminMenuPage = () => {
 
     const addItem = async (e) => {
         e.preventDefault();
-        await axios.post('http://localhost:5021/api/Menu/item', { ...newItem, price: parseFloat(newItem.price), categoryId: parseInt(newItem.categoryId) }, { headers });
+        await axios.post(`${API_BASE}/api/Menu/item`, { ...newItem, price: parseFloat(newItem.price), categoryId: parseInt(newItem.categoryId) }, { headers });
         setNewItem({ name: '', price: '', categoryId: '', isAvailable: true });
         setShowAddItem(false);
         fetchMenu();
@@ -49,7 +50,7 @@ const AdminMenuPage = () => {
 
     const saveEdit = async (e) => {
         e.preventDefault();
-        await axios.put(`http://localhost:5021/api/Menu/item/${editingItem.id}`, editingItem, { headers });
+        await axios.put(`${API_BASE}/api/Menu/item/${editingItem.id}`, editingItem, { headers });
         setEditingItem(null);
         fetchMenu();
     };
@@ -58,7 +59,7 @@ const AdminMenuPage = () => {
         // Optimistically remove from UI
         setCategories(prev => prev.map(c => ({ ...c, items: c.items?.filter(i => i.id !== id) })));
         try {
-            await axios.delete(`http://localhost:5021/api/Menu/item/${id}`, { headers });
+            await axios.delete(`${API_BASE}/api/Menu/item/${id}`, { headers });
         } catch (err) {
             console.error(err);
             alert('Failed to delete item.');
@@ -67,7 +68,7 @@ const AdminMenuPage = () => {
     };
 
     const toggleAvailability = async (id) => {
-        await axios.patch(`http://localhost:5021/api/Menu/item/${id}/toggle`, {}, { headers });
+        await axios.patch(`${API_BASE}/api/Menu/item/${id}/toggle`, {}, { headers });
         fetchMenu();
     };
 

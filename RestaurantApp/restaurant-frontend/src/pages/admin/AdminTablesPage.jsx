@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -11,7 +12,7 @@ const AdminTablesPage = () => {
 
     const fetchTables = async () => {
         try {
-            const res = await axios.get('http://localhost:5021/api/Table/status', { headers });
+            const res = await axios.get(`${API_BASE}/api/Table/status`, { headers });
             setTables(res.data);
         } catch (err) { console.error(err); }
         finally { setLoading(false); }
@@ -26,7 +27,7 @@ const AdminTablesPage = () => {
     const resetTable = async (tableId, tableNumber) => {
         if (!window.confirm(`Reset Table ${tableNumber}? This will clear the session.`)) return;
         try {
-            await axios.post(`http://localhost:5021/api/Table/reset/${tableId}`, {}, { headers });
+            await axios.post(`${API_BASE}/api/Table/reset/${tableId}`, {}, { headers });
             fetchTables();
         } catch (err) { console.error(err); }
     };

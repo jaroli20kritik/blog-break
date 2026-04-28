@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -14,7 +15,7 @@ const TablePage = () => {
         const connectTable = async () => {
             try {
                 // Pointing to ASP.NET Core API
-                const response = await axios.get(`http://localhost:5021/api/Table/${tableNumber}`);
+                const response = await axios.get(`${API_BASE}/api/Table/${tableNumber}`);
                 
                 // response.data contains the TableSession object
                 initSession(response.data);

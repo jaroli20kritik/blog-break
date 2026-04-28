@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -22,7 +23,7 @@ const MenuPage = () => {
 
         const fetchMenu = async () => {
             try {
-                const response = await axios.get('http://localhost:5021/api/Menu');
+                const response = await axios.get(`${API_BASE}/api/Menu`);
                 setCategories(response.data);
             } catch (err) {
                 console.error("Failed to load menu", err);

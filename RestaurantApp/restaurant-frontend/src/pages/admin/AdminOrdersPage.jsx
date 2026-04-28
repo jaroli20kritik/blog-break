@@ -1,3 +1,4 @@
+import { API_BASE } from '../../config';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -20,7 +21,7 @@ const AdminOrdersPage = () => {
         try {
             const params = new URLSearchParams({ page, pageSize: 20 });
             if (filter) params.append('status', filter);
-            const res = await axios.get(`http://localhost:5021/api/Order/all?${params}`, { headers });
+            const res = await axios.get(`${API_BASE}/api/Order/all?${params}`, { headers });
             setOrders(res.data.orders);
             setTotal(res.data.total);
         } catch (err) { console.error(err); }
@@ -30,7 +31,7 @@ const AdminOrdersPage = () => {
 
     useEffect(() => {
         const connection = new HubConnectionBuilder()
-            .withUrl('http://localhost:5021/orderhub')
+            .withUrl(`${API_BASE}/orderhub`)
             .withAutomaticReconnect()
             .build();
 
@@ -47,7 +48,7 @@ const AdminOrdersPage = () => {
 
     const updateStatus = async (orderId, status) => {
         try {
-            await axios.post(`http://localhost:5021/api/Order/${orderId}/status`, JSON.stringify(status), {
+            await axios.post(`${API_BASE}/api/Order/${orderId}/status`, JSON.stringify(status), {
                 headers: { ...headers, 'Content-Type': 'application/json' }
             });
             fetchOrders();

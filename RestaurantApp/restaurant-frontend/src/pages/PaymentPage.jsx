@@ -1,3 +1,4 @@
+import { API_BASE } from '../config';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -20,7 +21,7 @@ const PaymentPage = () => {
         const apiMethod = method === 'online' ? 'MockRazorpay' : (method === 'upi' ? 'UPI' : 'Cash');
         
         try {
-            const resp = await axios.post('http://localhost:5021/api/Payment/initiate', {
+            const resp = await axios.post(`${API_BASE}/api/Payment/initiate`, {
                 orderId: order.id,
                 paymentMethod: apiMethod
             });
@@ -60,7 +61,7 @@ const PaymentPage = () => {
 
     const failPayment = async () => {
         try {
-            const resp = await axios.post(`http://localhost:5021/api/Payment/fail/${paymentId}`);
+            const resp = await axios.post(`${API_BASE}/api/Payment/fail/${paymentId}`);
             setPaymentDetails(resp.data);
             setStatus('failed');
         } catch (err) {
