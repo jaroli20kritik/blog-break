@@ -1,0 +1,19 @@
+# Backend
+RestaurantBackend/bin/
+RestaurantBackend/obj/
+RestaurantBackend/*.db
+RestaurantBackend/*.db-shm
+RestaurantBackend/*.db-wal
+
+# Frontend
+restaurant-frontend/node_modules/
+restaurant-frontend/dist/
+
+# IDE
+.vscode/
+.vs/
+*.user
+
+# Env
+.env
+.env.local

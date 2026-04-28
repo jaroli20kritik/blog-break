@@ -260,24 +260,14 @@ function renderGrid(posts) {
 
     grid.innerHTML = posts.map(post => `
         <article class="post-card reveal" onclick="location.href='post.html?id=${post.id}'">
-            <div class="post-card-inner">
-                <div class="post-card-front">
-                    <img src="${resolveImageUrl(post.imageUrl)}" alt="${post.title}">
-                    <div class="post-card-front-overlay">
-                        <span class="post-category" style="background: var(--accent); color: #fff; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.65rem; font-weight: 700; margin-bottom: 0.8rem; display: inline-block;">${post.category}</span>
-                        <h2 style="font-size: 1.4rem; font-weight: 700;">${post.title}</h2>
-                    </div>
-                </div>
-                <div class="post-card-back">
-                    <span class="post-category">${post.category}</span>
-                    <div>
-                        <h3>${post.title}</h3>
-                        <p>${post.summary}</p>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 600; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                        <span>${new Date(post.publishedDate).toLocaleDateString()}</span>
-                        <span>Read More →</span>
-                    </div>
+            <img class="post-card-img" src="${resolveImageUrl(post.imageUrl)}" alt="${post.title}">
+            <div class="post-card-content">
+                <span class="post-category" style="display: inline-block; margin-bottom: 0.5rem; background: var(--bg-alt); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem;">${post.category}</span>
+                <h3>${post.title}</h3>
+                <p>${post.summary}</p>
+                <div class="post-card-footer">
+                    <span>${new Date(post.publishedDate).toLocaleDateString()}</span>
+                    <span class="read-more">Read More →</span>
                 </div>
             </div>
         </article>
@@ -312,16 +302,14 @@ function renderPostDetail(post) {
 
     if (headerContainer) {
         headerContainer.innerHTML = `
-            <div class="post-detail-header">
-                <img src="${resolveImageUrl(post.imageUrl)}" class="post-detail-header-bg" alt="${post.title}">
-                <div class="post-detail-header-content reveal">
-                    <span class="post-category">${post.category}</span>
-                    <h1>${post.title}</h1>
-                    <div class="post-detail-meta">
-                        Published on ${new Date(post.publishedDate).toLocaleDateString()}
-                    </div>
+            <div class="post-detail-header reveal">
+                <span class="post-category" style="display: inline-block; background: var(--accent); color: #fff; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-bottom: 1rem;">${post.category}</span>
+                <h1>${post.title}</h1>
+                <div class="post-detail-meta">
+                    Published on ${new Date(post.publishedDate).toLocaleDateString()}
                 </div>
             </div>
+            <img src="${resolveImageUrl(post.imageUrl)}" class="post-detail-img reveal" alt="${post.title}">
         `;
     }
 
