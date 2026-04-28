@@ -46,7 +46,7 @@ builder.Services.AddDbContext<RestaurantDbContext>(options =>
 // Configure CORS for React frontend
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",
-        policy => policy.WithOrigins("http://localhost:5173")
+        policy => policy.SetIsOriginAllowed(origin => true) // Allow any origin to support live deployment
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
