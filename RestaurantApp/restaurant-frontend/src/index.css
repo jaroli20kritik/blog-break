@@ -1813,3 +1813,66 @@ body {
 .menu-item-image.loaded {
     opacity: 1;
 }
+
+/* Premium QR Code Printing Styles */
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 32px;
+  padding: 20px;
+}
+
+.qr-card {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-brand-label {
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.qr-card h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.qr-wrapper {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 16px;
+  display: inline-block;
+  margin: 12px 0;
+  border: 1px dashed #cbd5e1;
+}
+
+.qr-instructions {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.qr-url {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  word-break: break-all;
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
