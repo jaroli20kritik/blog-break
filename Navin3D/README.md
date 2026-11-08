@@ -22,7 +22,7 @@ If you type a new `category`, a new filter and category tile are created automat
 
 | Field | Meaning |
 |---|---|
-| `id` | unique, lowercase-with-dashes; used for share links like `index.html#product/voronoi-planter` |
+| `id` | unique, lowercase-with-dashes; used for share links like `index.html#p-voronoi-planter` |
 | `name` | product name |
 | `category` | main group (drives filters and category tiles) |
 | `tags` | small labels under the name |

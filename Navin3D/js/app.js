@@ -225,7 +225,7 @@
     if (modal.hidden) { lastFocus = document.activeElement; modal.hidden = false; document.body.style.overflow = "hidden"; }
     $(".modal__panel").scrollTop = 0;
     $(".modal__close").focus({ preventScroll: true });
-    if (push) history.replaceState(null, "", "#product/" + p.id);
+    if (push) history.replaceState(null, "", "#p-" + p.id);
   }
   function closeModal() {
     if (modal.hidden) return;
@@ -327,11 +327,19 @@
     }).join("") : `<li class="drawer__empty" style="display:block;background:none">Your list is empty.<br>Tap <b>+</b> on any design to add it.</li>`;
     const send = $("#drawerSend"); const has = ids.length > 0;
     let html = "";
-    if (SITE.whatsapp) html += `<button class="btn btn--wa" data-send="wa"${has ? "" : " disabled"}>Send on WhatsApp</button>`;
-    if (SITE.email) html += `<button class="btn btn--primary" data-send="mail"${has ? "" : " disabled"}>Send by e-mail</button>`;
+    if (SITE.whatsapp) html += `<a class="btn btn--wa" data-send="wa" target="_blank" rel="noopener"${has ? "" : " hidden"}>Send on WhatsApp</a>`;
+    if (SITE.email) html += `<a class="btn btn--primary" data-send="mail"${has ? "" : " hidden"}>Send by e-mail</a>`;
     html += `<button class="btn btn--ghost" data-send="copy"${has ? "" : " disabled"}>Copy enquiry text</button>`;
     send.innerHTML = html;
+    refreshSendLinks();
   }
+  function refreshSendLinks() {
+    const text = enquiryText();
+    const wa = $('#drawerSend [data-send="wa"]'), mail = $('#drawerSend [data-send="mail"]');
+    if (wa) wa.href = `https://wa.me/${SITE.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+    if (mail) mail.href = `mailto:${SITE.email}?subject=${encodeURIComponent("Product enquiry")}&body=${encodeURIComponent(text)}`;
+  }
+  ["#enqName", "#enqNotes"].forEach(s => $(s).addEventListener("input", refreshSendLinks));
   $("#drawerList").addEventListener("click", e => {
     const b = e.target.closest("[data-q]"); if (!b) return;
     const id = b.dataset.id; basket[id] = (basket[id] || 0) + +b.dataset.q;
@@ -339,14 +347,10 @@
     saveBasket();
   });
   $("#drawerSend").addEventListener("click", async e => {
-    const b = e.target.closest("[data-send]"); if (!b) return;
+    const b = e.target.closest('[data-send="copy"]'); if (!b) return;
     const text = enquiryText();
-    if (b.dataset.send === "wa") window.open(`https://wa.me/${SITE.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-    else if (b.dataset.send === "mail") location.href = `mailto:${SITE.email}?subject=${encodeURIComponent("Product enquiry")}&body=${encodeURIComponent(text)}`;
-    else {
-      try { await navigator.clipboard.writeText(text); toast("Enquiry copied — paste it in a message to us"); }
-      catch { prompt("Copy your enquiry:", text); }
-    }
+    try { await navigator.clipboard.writeText(text); toast("Enquiry copied. Paste it into a message to us."); }
+    catch { const n = $("#enqNotes"); n.value = text; n.select(); toast("Press Ctrl+C (or long-press) to copy your enquiry"); }
   });
   function openDrawer() { renderDrawer(); drawer.hidden = false; document.body.style.overflow = "hidden"; }
   function closeDrawer() { drawer.hidden = true; document.body.style.overflow = ""; }
@@ -373,7 +377,7 @@
 
   /* ---------- Deep links: #product/<id> ---------- */
   function fromHash() {
-    const m = location.hash.match(/^#product\/(.+)$/);
+    const m = location.hash.match(/^#(?:p-|product\/)(.+)$/);
     if (m && byId[decodeURIComponent(m[1])]) openModal(decodeURIComponent(m[1]), false);
   }
   addEventListener("hashchange", fromHash);
