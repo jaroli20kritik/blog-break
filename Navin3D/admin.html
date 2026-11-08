@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add Product · Navin 3D</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin { padding: 40px 0 80px; }
+    .admin h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: .4rem; }
+    .admin__grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2rem; margin-top: 2rem; align-items: start; }
+    .panel { background: var(--surface); border-radius: var(--radius); padding: 1.6rem; box-shadow: var(--shadow); }
+    .panel h2 { font-size: 1.15rem; margin-bottom: 1rem; }
+    .form { display: grid; gap: 1rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field input, .field textarea, .field select { border-radius: 12px; width: 100%; }
+    .field small { color: var(--muted); font-size: .75rem; }
+    .checks { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+    .checks label { display: flex; gap: .45rem; align-items: center; font-size: .92rem; }
+    .checks input { accent-color: var(--orange); width: 18px; height: 18px; }
+    .drop { border: 2px dashed var(--line); border-radius: 16px; padding: 1.2rem; text-align: center; color: var(--muted); font-size: .9rem; transition: border-color .2s, background .2s; cursor: pointer; }
+    .drop.over { border-color: var(--orange); background: color-mix(in srgb, var(--orange) 8%, transparent); }
+    .previews { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .6rem; }
+    .previews img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; }
+    pre { background: #241615; color: #f6e6da; padding: 1rem; border-radius: 14px; overflow: auto; font-size: .78rem; max-height: 340px; margin: 0; }
+    .actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+    .steps-list { margin: .4rem 0 0; padding-left: 1.2rem; color: var(--muted); font-size: .9rem; }
+    .steps-list li { margin-bottom: .35rem; }
+    .steps-list code, .hint code { background: var(--bg-2); padding: .1rem .4rem; border-radius: 6px; font-size: .85em; color: var(--text); }
+    .sticky { position: sticky; top: 92px; display: grid; gap: 1.4rem; }
+    #previewCard { max-width: 300px; animation: none; }
+    .existing { max-height: 260px; overflow: auto; display: grid; gap: .3rem; font-size: .88rem; }
+    .existing span { color: var(--muted); }
+    @media (max-width: 900px) { .admin__grid { grid-template-columns: 1fr; } .sticky { position: static; } .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="nav is-scrolled">
+    <div class="container nav__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">N<span>3D</span></span>
+        <span class="brand__text">Navin 3D<small>Product builder</small></span>
+      </a>
+      <a href="index.html" class="btn btn--ghost" style="padding:.55rem 1.1rem">← Back to site</a>
+    </div>
+  </header>
+
+  <main class="container admin">
+    <p class="eyebrow">No database needed</p>
+    <h1>Add a new product</h1>
+    <p class="muted" style="max-width:62ch">Fill in the form. The page creates the product entry for you — then download the updated
+      <code>products.js</code> and replace the one in the <code>js/</code> folder. Your photos go in <code>images/products/</code>.</p>
+
+    <div class="admin__grid">
+      <section class="panel">
+        <h2>Product details</h2>
+        <form class="form" id="form" autocomplete="off">
+          <label class="field"><span>Product name *</span><input id="name" required placeholder="e.g. Lotus Diya Stand"></label>
+          <div class="row">
+            <label class="field"><span>Category *</span><input id="category" list="catList" required placeholder="Pick or type a new one"><datalist id="catList"></datalist></label>
+            <label class="field"><span>Price</span><input id="price" placeholder="Leave empty for “Price on request”"></label>
+          </div>
+          <label class="field"><span>Tags</span><input id="tags" placeholder="Comma separated, e.g. Keychains, Fidget"></label>
+          <label class="field"><span>Short description</span><textarea id="description" rows="2" placeholder="Optional"></textarea></label>
+          <label class="field"><span>Highlights</span><textarea id="highlights" rows="4" placeholder="One per line"></textarea></label>
+          <div class="field"><span>Photos</span>
+            <div class="drop" id="drop" tabindex="0">Drop photos here or click to choose<br><small>They are only previewed here — copy the files into <b>images/products/</b> yourself.</small></div>
+            <input type="file" id="files" accept="image/*" multiple hidden>
+            <div class="previews" id="previews"></div>
+          </div>
+          <label class="field"><span>Image paths</span><textarea id="images" rows="3" placeholder="images/products/my-product-1.jpg (one per line)"></textarea>
+            <small>Filled automatically from the photos you choose. First one is the cover.</small></label>
+          <div class="checks">
+            <label><input type="checkbox" id="isNew" checked> Show “NEW” badge</label>
+            <label><input type="checkbox" id="featured"> Feature in hero slider</label>
+          </div>
+          <label class="field"><span>Link id</span><input id="pid" placeholder="auto-generated from name"><small>Used in the shareable link: index.html#product/<b id="idEcho">…</b></small></label>
+        </form>
+      </section>
+
+      <div class="sticky">
+        <section class="panel">
+          <h2>Live preview</h2>
+          <div id="previewWrap"></div>
+        </section>
+        <section class="panel">
+          <h2>Your new entry</h2>
+          <pre id="code"></pre>
+          <div class="actions">
+            <button class="btn btn--primary" id="download">Download updated products.js</button>
+            <button class="btn btn--ghost" id="copy">Copy entry</button>
+          </div>
+          <ol class="steps-list">
+            <li>Copy the photos into <code>images/products/</code></li>
+            <li>Replace <code>js/products.js</code> with the downloaded file</li>
+            <li>Refresh <code>index.html</code> — your product is live!</li>
+          </ol>
+        </section>
+        <section class="panel">
+          <h2>Already on the site (<span id="existingCount"></span>)</h2>
+          <div class="existing" id="existing"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="js/products.js"></script>
+  <script>
+  (() => {
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const P = window.PRODUCTS || [], SITE = window.SITE || {};
+    const slug = s => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    const lines = s => s.split("\n").map(x => x.trim()).filter(Boolean);
+    try { if (localStorage.getItem("n3d-theme")) document.documentElement.dataset.theme = localStorage.getItem("n3d-theme"); } catch {}
+
+    $("#catList").innerHTML = [...new Set(P.map(p => p.category))].map(c => `<option value="${esc(c)}">`).join("");
+    $("#existingCount").textContent = P.length;
+    $("#existing").innerHTML = P.map((p, i) => `<div>${String(i + 1).padStart(2, "0")} · ${esc(p.name)} <span>— ${esc(p.category)}</span></div>`).join("");
+
+    let previewURLs = [], idTouched = false;
+    const fields = ["name", "category", "price", "tags", "description", "highlights", "images", "isNew", "featured", "pid"];
+
+    function product() {
+      const name = $("#name").value.trim();
+      let id = idTouched ? slug($("#pid").value) : slug(name);
+      if (!idTouched) $("#pid").value = id;
+      let base = id || "new-product", n = 2;
+      id = base; while (P.some(p => p.id === id)) id = `${base}-${n++}`;
+      $("#idEcho").textContent = id;
+      return {
+        id, name: name || "New product",
+        category: $("#category").value.trim() || "Other",
+        tags: $("#tags").value.split(",").map(t => t.trim()).filter(Boolean),
+        isNew: $("#isNew").checked, featured: $("#featured").checked,
+        price: $("#price").value.trim(),
+        images: lines($("#images").value),
+        highlights: lines($("#highlights").value),
+        ...($("#description").value.trim() ? { description: $("#description").value.trim() } : {}),
+      };
+    }
+    const entry = p => "  " + JSON.stringify(p, null, 2).replace(/\n/g, "\n  ") + ",";
+
+    function update() {
+      const p = product();
+      if (!p.tags.length) p.tags = [p.category];
+      $("#code").textContent = entry(p);
+      const imgs = previewURLs.length ? previewURLs : p.images;
+      $("#previewWrap").innerHTML = `<article class="card" id="previewCard">
+        <div class="card__media">${imgs[0] ? `<img src="${esc(imgs[0])}" alt="">` : ""}
+          <span class="card__num">${String(P.length + 1).padStart(2, "0")}</span>${p.isNew ? '<span class="tag-new">NEW</span>' : ""}</div>
+        <div class="card__body"><h3>${esc(p.name)}</h3><span class="card__tags">${esc(p.tags.join(" · "))}</span>
+          <div class="card__foot"><span class="card__price">${p.price ? esc(p.price) : "Price on request"}</span></div></div></article>`;
+      return p;
+    }
+    fields.forEach(f => $("#" + f).addEventListener("input", update));
+    $("#pid").addEventListener("input", () => { idTouched = $("#pid").value.trim() !== ""; update(); });
+
+    function takeFiles(files) {
+      const imgs = [...files].filter(f => f.type.startsWith("image/"));
+      if (!imgs.length) return;
+      previewURLs.forEach(URL.revokeObjectURL);
+      previewURLs = imgs.map(f => URL.createObjectURL(f));
+      $("#previews").innerHTML = previewURLs.map(u => `<img src="${u}" alt="">`).join("");
+      $("#images").value = imgs.map(f => "images/products/" + f.name).join("\n");
+      update();
+    }
+    const drop = $("#drop");
+    drop.addEventListener("click", () => $("#files").click());
+    drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#files").click(); } });
+    $("#files").addEventListener("change", e => takeFiles(e.target.files));
+    ["dragenter", "dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+    ["dragleave", "drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+    drop.addEventListener("drop", e => takeFiles(e.dataTransfer.files));
+
+    function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2400); }
+    function valid() {
+      if (!$("#name").value.trim() || !$("#category").value.trim()) { toast("Please fill in the name and category"); $("#form").reportValidity(); return false; }
+      return true;
+    }
+    $("#copy").addEventListener("click", async () => {
+      if (!valid()) return;
+      try { await navigator.clipboard.writeText($("#code").textContent); toast("Copied! Paste it at the end of the PRODUCTS list"); }
+      catch { prompt("Copy this entry:", $("#code").textContent); }
+    });
+    $("#download").addEventListener("click", () => {
+      if (!valid()) return;
+      const p = update();
+      const all = [...P, p];
+      const header = `/* =====================================================================
+   NAVIN 3D DESIGNS & CREATIONS — PRODUCT DATA
+   This file IS the "database". Edit it by hand, or use admin.html to add
+   products and download a fresh copy. Photos live in images/products/.
+   ===================================================================== */\n\n`;
+      const js = header + "window.SITE = " + JSON.stringify(SITE, null, 2) + ";\n\nwindow.PRODUCTS = [\n" + all.map(entry).join("\n") + "\n];\n";
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([js], { type: "text/javascript" }));
+      a.download = "products.js"; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      toast("Downloaded — replace js/products.js with it");
+    });
+    update();
+  })();
+  </script>
+</body>
+</html>
