@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------
+   Brand tokens — change colours / fonts here.
+   Paper white, charcoal ink, one saffron-orange accent.
+   ------------------------------------------------------------ */
+@theme {
+  --color-paper: #faf9f6;
+  --color-paper-2: #f2f0eb;
+  --color-ink: #17171a;
+  --color-ink-2: #3a3a40;
+  --color-muted: #6b6b73;
+  --color-line: #e6e3dc;
+  --color-accent: #f26a1b;
+  --color-accent-600: #d9560a;
+  --color-accent-50: #fff1e8;
+  --color-whatsapp: #1fa855;
+
+  --font-display: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 1.5rem;
+  --shadow-soft: 0 1px 2px rgb(23 23 26 / 0.04), 0 12px 32px -12px rgb(23 23 26 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(23 23 26 / 0.05), 0 28px 56px -20px rgb(23 23 26 / 0.24);
+
+  --animate-rise: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 { @apply font-display tracking-tight text-ink; text-wrap: balance; }
+  ::selection { @apply bg-accent text-white; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.16em] text-accent; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold
+           transition duration-200 ease-out active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary { @apply bg-ink text-white hover:bg-ink-2 shadow-[0_8px_24px_-10px_rgb(23_23_26/0.6)]; }
+  .btn-accent { @apply bg-accent text-white hover:bg-accent-600 shadow-[0_10px_26px_-10px_rgb(242_106_27/0.8)]; }
+  .btn-outline { @apply border border-ink/15 bg-white text-ink hover:border-ink/40; }
+  .btn-whatsapp { @apply bg-whatsapp text-white hover:brightness-110; }
+
+  .card { @apply rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-soft)] ring-1 ring-line/70; }
+
+  .field {
+    @apply w-full rounded-2xl border border-line bg-white px-4 py-3 text-[15px] text-ink placeholder:text-muted/70
+           transition focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15;
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--color-paper-2) 0%, #fbfaf7 50%, var(--color-paper-2) 100%);
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
