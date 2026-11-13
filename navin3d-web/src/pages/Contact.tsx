@@ -9,6 +9,7 @@ import { SocialLinks } from "../components/SocialLinks";
 import { emailLink, phoneLink, whatsappLink } from "../lib/contact";
 import { usePageMeta } from "../lib/usePageMeta";
 import { cn } from "../lib/utils";
+import { openExternal } from "../lib/runtime";
 
 interface Form { name: string; phone: string; email: string; product: string; message: string }
 type Errors = Partial<Record<keyof Form, string>>;
@@ -62,7 +63,7 @@ export default function Contact() {
     const text = compose(form);
     const href = channel === "whatsapp" ? whatsappLink(text) : emailLink(`Enquiry from ${form.name.trim()}`, text);
     if (!href) return;
-    if (channel === "whatsapp") window.open(href, "_blank", "noopener,noreferrer");
+    if (channel === "whatsapp") openExternal(href);
     else window.location.href = href;
     setSent(channel);
   };

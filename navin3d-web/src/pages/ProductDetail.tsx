@@ -117,7 +117,7 @@ export default function ProductDetail() {
               <a href={mail} className="btn btn-outline py-4"><Mail className="h-4 w-4" aria-hidden="true" /> Email</a>
             )}
           </div>
-          <CopyLink url={url} />
+          {url && <CopyLink url={url} />}
         </div>
       </section>
 

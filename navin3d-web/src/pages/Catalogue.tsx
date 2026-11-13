@@ -79,7 +79,7 @@ export default function Catalogue() {
             <h2 className="mt-4 text-2xl font-extrabold">Share or request it</h2>
             <p className="mt-2 text-[15px] text-muted">Send the catalogue link to a friend, or ask us to send the latest copy on WhatsApp.</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <a href={shareWa} target="_blank" rel="noopener noreferrer" className="btn btn-outline"><Share2 className="h-4 w-4" aria-hidden="true" /> Share on WhatsApp</a>
+              {pdfUrl && <a href={shareWa} target="_blank" rel="noopener noreferrer" className="btn btn-outline"><Share2 className="h-4 w-4" aria-hidden="true" /> Share on WhatsApp</a>}
               {askWa && <a href={askWa} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp"><WhatsAppIcon size={16} /> Ask us for it</a>}
             </div>
           </div>
