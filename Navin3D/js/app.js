@@ -359,15 +359,51 @@
 
   /* ---------- Contact section ---------- */
   (function renderContact() {
+    const wa = (SITE.whatsapp || "").replace(/\D/g, "");
     const a = [];
-    if (SITE.whatsapp) a.push(`<a class="btn btn--wa" target="_blank" rel="noopener" href="https://wa.me/${esc(SITE.whatsapp.replace(/\D/g, ""))}?text=${encodeURIComponent("Hi! I'd like to know more about your 3D designs.")}">WhatsApp us</a>`);
-    if (SITE.phone) a.push(`<a class="btn btn--primary" href="tel:${esc(SITE.phone.replace(/\s/g, ""))}">Call ${esc(SITE.phone)}</a>`);
-    if (SITE.email) a.push(`<a class="btn btn--ghost" href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>`);
+    if (wa) a.push(`<a class="btn btn--wa" target="_blank" rel="noopener" href="https://wa.me/${esc(wa)}?text=${encodeURIComponent("Hi! I'd like to know more about your 3D designs.")}">WhatsApp us</a>`);
     if (SITE.instagram) a.push(`<a class="btn btn--ghost" target="_blank" rel="noopener" href="https://instagram.com/${esc(SITE.instagram)}">@${esc(SITE.instagram)}</a>`);
     a.push(`<button class="btn ${a.length ? "btn--ghost" : "btn--primary"}" id="ctaBasket">Build an enquiry list</button>`);
     $("#contactActions").innerHTML = a.join("");
     $("#ctaBasket").addEventListener("click", openDrawer);
+
+    const cards = [];
+    if (SITE.email) cards.push({ label: "Email", value: SITE.email, href: `mailto:${SITE.email}` });
+    if (SITE.phone) cards.push({ label: wa ? "Phone / WhatsApp" : "Phone", value: SITE.phone, href: `tel:${SITE.phone.replace(/\s/g, "")}` });
+    $("#contactCards").innerHTML = cards.map((c, i) => `<div class="contact-card"><small>${esc(c.label)}</small>
+      <a href="${esc(c.href)}">${esc(c.value)}</a><button type="button" data-copy="${i}">Copy</button></div>`).join("");
+    $("#contactCards").addEventListener("click", async e => {
+      const b = e.target.closest("[data-copy]"); if (!b) return;
+      const v = cards[+b.dataset.copy].value;
+      try { await navigator.clipboard.writeText(v); toast(`Copied ${v}`); }
+      catch {
+        const r = document.createRange(); r.selectNodeContents(b.previousElementSibling);
+        getSelection().removeAllRanges(); getSelection().addRange(r); toast("Selected. Press Ctrl+C to copy");
+      }
+    });
+    if (cards.length) $("#footerContact").textContent = cards.map(c => c.value).join(" · ");
+    $$("[data-catalogue]").forEach(l => { if (SITE.catalogue) l.href = SITE.catalogue; else l.hidden = true; });
   })();
+
+  /* ---------- Catalogue download ----------
+     On a normal web host the <a download> link just works. When the page is
+     shown inside the claude.ai viewer, downloads must go through its save prompt. */
+  let saver = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then(d => { saver = d; }).catch(() => {});
+  }
+  document.addEventListener("click", async e => {
+    const a = e.target.closest("a[data-catalogue][download]");
+    if (!a || !saver) return;
+    e.preventDefault();
+    try {
+      const blob = await (await fetch(a.href)).blob();
+      await saver.save({ filename: "Navin3D-Product-Catalogue.pdf", data: blob });
+      toast("Catalogue saved");
+    } catch (err) {
+      if (!err || err.code !== "declined") toast("Couldn't save the PDF here. Try “View online”.");
+    }
+  });
 
   /* ---------- Reveal on scroll ---------- */
   const io = "IntersectionObserver" in window

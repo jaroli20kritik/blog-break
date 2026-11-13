@@ -27,11 +27,12 @@ window.SITE = {
   name: "Navin 3D Designs & Creations",
   tagline: "Handcrafted 3D-printed décor, idols, planters, desk accessories & keychains",
   // Fill these in to switch on the WhatsApp / e-mail / Instagram buttons.
-  whatsapp: "",          // country code + number, digits only, e.g. "919876543210"
-  email: "",             // e.g. "hello@navin3d.in"
+  whatsapp: "916375411047", // country code + number, digits only
+  email: "jaroli20kritik@gmail.com",
   instagram: "",         // e.g. "navin3d.designs" (without @)
-  phone: "",             // e.g. "+91 98765 43210"
+  phone: "+91 63754 11047",
   location: "India",
+  catalogue: "downloads/Navin3D-Product-Catalogue.pdf", // PDF people can download; replace the file to update it
 };
 
 window.PRODUCTS = [
@@ -117,6 +118,27 @@ window.PRODUCTS = [
       "Detailed hair, face and mala",
       "Ideal for desks, car dashboards and meditation corners",
       "A meaningful gift for Maha Shivaratri and housewarmings",
+    ],
+  },
+  {
+    id: "ganesha-keychain",
+    name: "Ganesha Keychain",
+    category: "Keychains",
+    tags: ["Keychains", "Idols"],
+    isNew: true,
+    featured: true,
+    price: "",
+    images: [
+      "images/products/ganesha-keychain-1.jpg",
+      "images/products/ganesha-keychain-2.jpg",
+      "images/products/ganesha-keychain-3.jpg",
+      "images/products/ganesha-keychain-4.jpg",
+    ],
+    highlights: [
+      "Smiling Bal Ganesha with blessing hand and modak",
+      "Fine detailing on crown, tilak and necklace",
+      "Sturdy metal key ring",
+      "A lucky charm for new keys, homes and vehicles",
     ],
   },
   {
@@ -306,6 +328,27 @@ window.PRODUCTS = [
       "Two-colour raised lettering",
       "Choose from a range of colour pairs",
       "Ideal for return gifts, school bags and teams",
+    ],
+  },
+  {
+    id: "initial-name-keychain",
+    name: "Initial & Name Keychain",
+    category: "Personalised Gifts",
+    tags: ["Keychains", "Personalised"],
+    isNew: true,
+    featured: true,
+    price: "",
+    images: [
+      "images/products/initial-name-keychain-1.jpg",
+      "images/products/initial-name-keychain-2.jpg",
+      "images/products/initial-name-keychain-3.jpg",
+      "images/products/initial-name-keychain-4.jpg",
+    ],
+    highlights: [
+      "Big initial letter with the full name in flowing script",
+      "Two-colour design, printed to order",
+      "Choose your own initial, name and colours",
+      "A personal gift for birthdays, couples and friends",
     ],
   },
   {

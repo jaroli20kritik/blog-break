@@ -211,6 +211,29 @@ select, .field input, .field textarea {
 .add-btn.added:hover { transform: none; }
 .empty { text-align: center; padding: 3rem 1rem; font-size: 1.1rem; }
 
+/* Catalogue download */
+.catalogue { display: grid; grid-template-columns: auto 1fr; gap: 3rem; align-items: center; }
+.catalogue__cover {
+  position: relative; width: 220px; aspect-ratio: 210/297; max-width: 100%; border-radius: 10px 18px 18px 10px; overflow: hidden; background: var(--maroon);
+  color: #fff; text-decoration: none; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.2rem; box-shadow: var(--shadow-lg);
+  border-top: 6px solid var(--orange); transform: perspective(900px) rotateY(-14deg); transition: transform .5s var(--ease);
+}
+.catalogue__cover:hover { transform: perspective(900px) rotateY(0) translateY(-6px); }
+.catalogue__cover img { position: absolute; left: 1.2rem; top: 2.2rem; width: calc(100% - 2.4rem); aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; }
+.catalogue__cover span { font-weight: 800; font-size: 1.5rem; line-height: 1.05; }
+.catalogue__cover small { color: var(--orange-2); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; margin-top: .4rem; }
+.catalogue__text { min-width: 0; }
+.catalogue__text h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 800; margin-bottom: .6rem; }
+.catalogue__text p { max-width: 52ch; }
+
+/* Contact cards */
+.contact-cards { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: 1.4rem; }
+.contact-card { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 18px; padding: .9rem 1.1rem; display: grid; gap: .15rem; min-width: 0; }
+.contact-card small { text-transform: uppercase; letter-spacing: .12em; font-size: .68rem; color: var(--orange-2); font-weight: 600; }
+.contact-card a { color: #fff; font-weight: 600; font-size: 1.05rem; text-decoration: none; overflow-wrap: anywhere; }
+.contact-card button { justify-self: start; background: none; border: 0; padding: .2rem 0 0; color: rgba(255,255,255,.75); font-size: .78rem; text-decoration: underline; }
+.contact-card button:hover { color: #fff; }
+
 /* Steps */
 .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; counter-reset: s; }
 .step { background: var(--surface); padding: 1.8rem 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); position: relative; overflow: hidden; transition: transform .3s var(--ease); }
@@ -324,6 +347,9 @@ select, .field input, .field textarea {
   .card__num { font-size: 1.1rem; }
   .cat-grid { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: 1fr; }
+  .catalogue { grid-template-columns: 1fr; gap: 2rem; justify-items: center; text-align: center; }
+  .catalogue .hero__cta { justify-content: center; }
+  .catalogue__text p { margin-inline: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
