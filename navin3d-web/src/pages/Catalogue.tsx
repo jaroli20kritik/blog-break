@@ -9,7 +9,7 @@ import { whatsappLink } from "../lib/contact";
 import { asset, cn, pageUrl } from "../lib/utils";
 
 export default function Catalogue() {
-  usePageMeta("Product catalogue (PDF)", `Download the ${site.name} product catalogue — ${site.catalogue.pages} pages of 3D-printed products with photos and highlights.`);
+  usePageMeta("Product catalogue (PDF)", `Download the ${site.name} product catalogue — ${site.catalogue.pages} pages of 3D-designed products with photos and highlights.`);
   const pdf = asset(site.catalogue.file);
   const [active, setActive] = useState(0);
   const pdfUrl = pageUrl("/" + site.catalogue.file, site.url);

@@ -20,7 +20,7 @@ export default function Products() {
 
   usePageMeta(
     activeCat ? activeCat.name : "Products",
-    activeCat ? activeCat.description : "Browse 3D-printed idols, festive décor, planters, keychains, phone stands and personalised gifts. Search and filter by category.",
+    activeCat ? activeCat.description : "Browse 3D-designed idols, festive décor, planters, keychains, phone stands and personalised gifts. Search and filter by category.",
   );
 
   const update = (key: string, value: string) => {

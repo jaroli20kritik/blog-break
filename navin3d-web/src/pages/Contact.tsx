@@ -36,7 +36,7 @@ function compose(f: Form) {
 }
 
 export default function Contact() {
-  usePageMeta("Contact us", `Contact ${site.name} in Udaipur for orders, prices, custom designs and bulk 3D-printed gifts. WhatsApp, phone and email.`);
+  usePageMeta("Contact us", `Contact ${site.name} in Udaipur for orders, prices, custom designs and bulk 3D-designed gifts. WhatsApp, phone and email.`);
   const [params] = useSearchParams();
   const preset = params.get("product");
   const [form, setForm] = useState<Form>({

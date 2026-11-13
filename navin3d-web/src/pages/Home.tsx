@@ -32,7 +32,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Featured"
           title={<span id="featured-h">Pieces people ask about most</span>}
-          description="Idols, festive décor and personalised keychains, printed with the fine detail 3D printing allows."
+          description="Idols, festive décor and personalised keychains, crafted with fine, detailed 3D designs."
           action={<Link to="/products" className="btn btn-outline shrink-0">All products <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>}
         />
         <div className="grid grid-cols-1 gap-5 min-[480px]:grid-cols-2 lg:grid-cols-4">
@@ -85,7 +85,7 @@ export default function Home() {
           {[
             { icon: MapPin, title: "Designed & printed in Udaipur", text: "Every piece is modelled and printed by us, not resold from elsewhere." },
             { icon: Wand2, title: "Personal by design", text: "Names, initials, colours and profile links — printed for one person or a whole team." },
-            { icon: Layers, title: "Fine, visible detail", text: "Crowns, jewellery, lettering and lattices that 3D printing captures layer by layer." },
+            { icon: Layers, title: "Fine, visible detail", text: "Crowns, jewellery, lettering and lattices captured in fine 3D detail." },
             { icon: Boxes, title: "Retail to wholesale", text: "Single gifts, return-gift sets and bulk orders for shops and events." },
           ].map(({ icon: Icon, title, text }, i) => (
             <Reveal key={title} delay={i * 70}>
@@ -184,10 +184,10 @@ function Hero() {
       <div className="container-x grid items-center gap-12 pb-20 pt-12 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pb-28 lg:pt-20">
         <div>
           <p className="inline-flex animate-rise items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-xs font-semibold text-ink-2 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" /> 3D printing studio · Udaipur, Rajasthan
+            <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" /> 3D design studio · Udaipur, Rajasthan
           </p>
           <h1 className="mt-6 animate-rise text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[4.4rem] [animation-delay:60ms]">
-            Bring Your Ideas to Life with <span className="relative whitespace-nowrap text-accent">3D Printing</span>
+            Bring Your Ideas to Life with <span className="relative whitespace-nowrap text-accent">3D Designs</span>
           </h1>
           <p className="mt-6 max-w-xl animate-rise text-lg leading-relaxed text-muted [animation-delay:120ms]">
             Idols, festive décor, planters, desk accessories and personalised keychains — designed and printed to order, from a single gift to a bulk set.
@@ -207,7 +207,7 @@ function Hero() {
 
         <div className="relative mx-auto w-full max-w-[560px] animate-rise [animation-delay:150ms]">
           <div className="grid grid-cols-[1.25fr_1fr] gap-4">
-            <ProductImage src={heroImgs[0]} alt="Ganesha Kumkum Chawal Dibbi, 3D printed in ivory" priority className="row-span-2 aspect-[3/4] rounded-[2rem] shadow-[var(--shadow-lift)]" />
+            <ProductImage src={heroImgs[0]} alt="Ganesha Kumkum Chawal Dibbi in ivory" priority className="row-span-2 aspect-[3/4] rounded-[2rem] shadow-[var(--shadow-lift)]" />
             <ProductImage src={heroImgs[1]} alt="Bal Krishna flute keychain" priority className="aspect-square rounded-[1.6rem] shadow-[var(--shadow-soft)]" />
             <ProductImage src={heroImgs[2]} alt="Flexi octopus keychain" priority className="aspect-square rounded-[1.6rem] shadow-[var(--shadow-soft)]" />
           </div>

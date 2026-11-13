@@ -8,7 +8,7 @@ import { usePageMeta } from "../lib/usePageMeta";
 
 const services = [
   { icon: PenTool, title: "3D design", text: "We model new designs and adapt existing ones — names, initials, sizes and details — before anything is printed." },
-  { icon: Cpu, title: "3D printing", text: "Pieces are printed layer by layer in-house, which lets us reproduce fine relief, lettering and moving joints." },
+  { icon: Cpu, title: "3D designs", text: "Pieces are printed layer by layer in-house, which lets us reproduce fine relief, lettering and moving joints." },
   { icon: Gift, title: "Personalised gifts", text: "Name and initial keychains, NFC profile keychains and other pieces made for one person." },
   { icon: Users, title: "Bulk & wholesale", text: "Return gifts, festive sets, team and school orders, and stock for retail shops." },
 ];
@@ -21,12 +21,12 @@ const quality = [
 ];
 
 export default function About() {
-  usePageMeta("About us", `About ${site.name}: a 3D printing studio in Udaipur, Rajasthan, making idols, décor, keychains and personalised gifts.`);
+  usePageMeta("About us", `About ${site.name}: a 3D design studio in Udaipur, Rajasthan, making idols, décor, keychains and personalised gifts.`);
   return (
     <>
       <PageHeader
         eyebrow="About us"
-        title="A 3D printing studio from Udaipur."
+        title="A 3D design studio from Udaipur."
         description={`${site.name} designs and prints décor, idols, planters, desk accessories, keychains and personalised gifts — for homes, festivals, gifting and businesses.`}
       />
 
@@ -55,7 +55,7 @@ export default function About() {
       <section className="border-y border-line bg-white py-20">
         <div className="container-x">
           <p className="eyebrow mb-3">What we do</p>
-          <h2 className="max-w-2xl text-3xl font-extrabold sm:text-4xl">Our 3D printing services</h2>
+          <h2 className="max-w-2xl text-3xl font-extrabold sm:text-4xl">Our 3D design services</h2>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {services.map(({ icon: Icon, title, text }, i) => (
               <Reveal key={title} delay={i * 70}>

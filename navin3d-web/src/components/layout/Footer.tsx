@@ -17,7 +17,7 @@ export function Footer() {
         <div className="space-y-5">
           <Logo light />
           <p className="max-w-sm text-sm leading-relaxed">
-            3D-printed idols, festive décor, planters, desk accessories, keychains and personalised gifts — designed and printed in Udaipur.
+            3D-designed idols, festive décor, planters, desk accessories, keychains and personalised gifts — designed and printed in Udaipur.
           </p>
           <SocialLinks variant="dark" />
         </div>

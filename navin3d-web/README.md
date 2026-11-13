@@ -1,6 +1,6 @@
 # Navin 3D Design and Creations — website
 
-Product showcase and digital catalogue for **Navin 3D Design and Creations**, a 3D printing studio in Udaipur, Rajasthan.
+Product showcase and digital catalogue for **Navin 3D Design and Creations**, a 3D design studio in Udaipur, Rajasthan.
 Customers browse products by category, view photos and details, download the PDF catalogue, and send enquiries on WhatsApp, by phone or by email.
 
 There is no database, no login and no payment gateway. All content lives in a few plain files you can edit.
