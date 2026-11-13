@@ -390,7 +390,18 @@
      shown inside the claude.ai viewer, downloads must go through its save prompt. */
   const inViewer = !!(window.claude && typeof window.claude.use === "function");
   const saverP = inViewer ? window.claude.use("downloads").catch(() => null) : null;
-  let pdfBlob = null, busy = false;
+  // Fetch the PDF once, in the background, as soon as the page is ready, so a
+  // tap on "Download" can open the save prompt straight away.
+  let pdfBlob = null, pdfP = null, busy = false;
+  const loadPdf = () => pdfP || (pdfP = fetch(SITE.catalogue)
+    .then(r => { if (!r.ok) throw { code: "fetch" }; return r.blob(); })
+    .then(b => (pdfBlob = b))
+    .catch(err => { pdfP = null; throw err; }));
+  if (inViewer && SITE.catalogue) {
+    const start = () => loadPdf().catch(() => {});
+    if (document.readyState === "complete") setTimeout(start, 800);
+    else addEventListener("load", () => setTimeout(start, 800), { once: true });
+  }
   const contactHint = SITE.phone ? ` Or message ${SITE.phone} for the PDF.` : "";
   document.addEventListener("click", async e => {
     const a = e.target.closest("a[data-catalogue]");
@@ -398,16 +409,11 @@
     e.preventDefault();
     if (busy) return;
     busy = true;
-    toast("Preparing the catalogue (7 MB)…");
+    if (!pdfBlob) toast("Getting the catalogue ready…");
     try {
-      const saver = await saverP;
+      const [saver, blob] = await Promise.all([saverP, pdfBlob || loadPdf()]);
       if (!saver) throw { code: "unavailable" };
-      if (!pdfBlob) {
-        const res = await fetch(a.getAttribute("href"));
-        if (!res.ok) throw { code: "fetch" };
-        pdfBlob = await res.blob();
-      }
-      await saver.save({ filename: "Navin3D-Product-Catalogue.pdf", data: pdfBlob });
+      await saver.save({ filename: "Navin3D-Product-Catalogue.pdf", data: blob });
       toast("Catalogue saved to your device");
     } catch (err) {
       const code = err && err.code;
