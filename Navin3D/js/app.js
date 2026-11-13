@@ -388,20 +388,34 @@
   /* ---------- Catalogue download ----------
      On a normal web host the <a download> link just works. When the page is
      shown inside the claude.ai viewer, downloads must go through its save prompt. */
-  let saver = null;
-  if (window.claude && typeof window.claude.use === "function") {
-    window.claude.use("downloads").then(d => { saver = d; }).catch(() => {});
-  }
+  const inViewer = !!(window.claude && typeof window.claude.use === "function");
+  const saverP = inViewer ? window.claude.use("downloads").catch(() => null) : null;
+  let pdfBlob = null, busy = false;
+  const contactHint = SITE.phone ? ` Or message ${SITE.phone} for the PDF.` : "";
   document.addEventListener("click", async e => {
-    const a = e.target.closest("a[data-catalogue][download]");
-    if (!a || !saver) return;
+    const a = e.target.closest("a[data-catalogue]");
+    if (!a || !inViewer) return;           // normal web host: the link works by itself
     e.preventDefault();
+    if (busy) return;
+    busy = true;
+    toast("Preparing the catalogue (7 MB)…");
     try {
-      const blob = await (await fetch(a.href)).blob();
-      await saver.save({ filename: "Navin3D-Product-Catalogue.pdf", data: blob });
-      toast("Catalogue saved");
+      const saver = await saverP;
+      if (!saver) throw { code: "unavailable" };
+      if (!pdfBlob) {
+        const res = await fetch(a.getAttribute("href"));
+        if (!res.ok) throw { code: "fetch" };
+        pdfBlob = await res.blob();
+      }
+      await saver.save({ filename: "Navin3D-Product-Catalogue.pdf", data: pdfBlob });
+      toast("Catalogue saved to your device");
     } catch (err) {
-      if (!err || err.code !== "declined") toast("Couldn't save the PDF here. Try “View online”.");
+      const code = err && err.code;
+      if (code === "declined") toast("Download cancelled");
+      else if (code === "rate_limited") toast("A save prompt is already open. Please try again in a moment.");
+      else toast("This viewer can't save files." + contactHint);
+    } finally {
+      busy = false;
     }
   });
 
